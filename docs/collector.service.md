@@ -82,13 +82,13 @@ It corresponds to the `StartName` attribute of the `Win32_Service` class.
 ### Example metric
 Lists the services that have a 'disabled' start mode.
 ```
-windows_service_start_mode{exported_name=~"(mssqlserver|sqlserveragent)",start_mode="disabled"}
+windows_service_start_mode{name=~"(mssqlserver|sqlserveragent)",start_mode="disabled"}
 ```
 
 ## Useful queries
 Counts the number of Microsoft SQL Server/Agent Processes
 ```
-count(windows_service_state{exported_name=~"(sqlserveragent|mssqlserver)",state="running"})
+count(windows_service_state{name=~"(sqlserveragent|mssqlserver)",state="running"})
 ```
 
 ## Alerting examples
@@ -100,22 +100,22 @@ groups:
 
   # Sends an alert when the 'sqlserveragent' service is not in the running state for 3 minutes.
   - alert: SQL Server Agent DOWN
-    expr: windows_service_state{instance="SQL",exported_name="sqlserveragent",state="running"} == 0
+    expr: windows_service_state{instance="SQL",name="sqlserveragent",state="running"} == 0
     for: 3m
     labels:
       severity: high
     annotations:
-      summary: "Service {{ $labels.exported_name }} down"
-      description: "Service {{ $labels.exported_name }} on instance {{ $labels.instance }} has been down for more than 3 minutes."
+      summary: "Service {{ $labels.name }} down"
+      description: "Service {{ $labels.name }} on instance {{ $labels.instance }} has been down for more than 3 minutes."
 
   # Sends an alert when the 'mssqlserver' service is not in the running state for 3 minutes.
   - alert: SQL Server DOWN
-    expr: windows_service_state{instance="SQL",exported_name="mssqlserver",state="running"} == 0
+    expr: windows_service_state{instance="SQL",name="mssqlserver",state="running"} == 0
     for: 3m
     labels:
       severity: high
     annotations:
-      summary: "Service {{ $labels.exported_name }} down"
-      description: "Service {{ $labels.exported_name }} on instance {{ $labels.instance }} has been down for more than 3 minutes."
+      summary: "Service {{ $labels.name }} down"
+      description: "Service {{ $labels.name }} on instance {{ $labels.instance }} has been down for more than 3 minutes."
 ```
 In this example, `instance` is the target label of the host. So each alert will be processed per host, which is then used in the alert description.
